@@ -12,6 +12,7 @@ import StockAnalyzer from './components/StockAnalyzer';
 import IntelligentDashboard from './components/IntelligentDashboard';
 import GPT4AllChat from './components/GPT4AllChat';
 import ContextManager from './components/ContextManager';
+import PerplexitySearch from './components/PerplexitySearch';
 import { AppContextProvider } from './context/AppContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -26,6 +27,8 @@ function App() {
                     <Route path="/dashboard" element={<AgentDashboard />} />
                     <Route path="/intelligent" element={<IntelligentDashboard />} />
                     <Route path="/ai-chat" element={<GPT4AllChat />} />
+                    <Route path="/search" element={<PerplexitySearch />} />
+                    <Route path="/maps" element={<PerplexitySearch />} />
                     <Route path="/context" element={<ContextManager />} />
                     <Route path="/tasks/new" element={<TaskForm />} />
                     <Route path="/tasks/history" element={<TaskHistory />} />

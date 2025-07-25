@@ -90,7 +90,7 @@ public class PluginController {
         if (plugin == null) {
             plugin = availablePlugins.get(pluginId);
         }
-
+        
         return plugin != null ? ResponseEntity.ok(plugin) : ResponseEntity.notFound().build();
     }
 
@@ -320,7 +320,7 @@ public class PluginController {
     @GetMapping("/marketplace/featured")
     public ResponseEntity<Map<String, Object>> getFeaturedPlugins() {
         Map<String, Object> marketplace = new HashMap<>();
-
+        
         marketplace.put("trending", Arrays.asList("sentiment-analyzer", "crypto-tracker", "news-aggregator"));
         marketplace.put("categories", Map.of(
             "Financial", 25,
@@ -339,7 +339,7 @@ public class PluginController {
     public ResponseEntity<List<PluginInfo>> searchPlugins(@RequestParam String query,
                                                           @RequestParam(required = false) String category) {
         List<PluginInfo> results = new ArrayList<>();
-
+        
         // Search in both installed and available plugins
         Stream.concat(installedPlugins.values().stream(), availablePlugins.values().stream())
             .filter(plugin -> plugin.getName().toLowerCase().contains(query.toLowerCase()) ||

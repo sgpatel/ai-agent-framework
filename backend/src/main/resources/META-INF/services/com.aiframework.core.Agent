@@ -4,3 +4,5 @@ com.aiframework.plugin.CustomerServiceAgent
 com.aiframework.plugin.TemplateAgent
 com.aiframework.plugin.SentimentAnalysisAgent
 com.aiframework.plugin.ChartVisualizationAgent
+com.aiframework.plugin.IntelligentSearchAgent
+com.aiframework.plugin.InteractiveMapPlugin

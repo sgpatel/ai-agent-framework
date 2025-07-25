@@ -41,6 +41,12 @@ export default function Navigation() {
                             <NavDropdown.Divider />
 
                             <NavDropdown.Header>Intelligence Agents</NavDropdown.Header>
+                            <LinkContainer to="/search">
+                                <NavDropdown.Item>
+                                    <span className="me-2">🔍</span>
+                                    Intelligent Search
+                                </NavDropdown.Item>
+                            </LinkContainer>
                             <LinkContainer to="/intelligent">
                                 <NavDropdown.Item>
                                     <span className="me-2">🧠</span>
@@ -53,6 +59,16 @@ export default function Navigation() {
                                     GPT4All Chat
                                 </NavDropdown.Item>
                             </LinkContainer>
+                            <NavDropdown.Divider />
+
+                            <NavDropdown.Header>Map & Location</NavDropdown.Header>
+                            <LinkContainer to="/maps">
+                                <NavDropdown.Item>
+                                    <span className="me-2">🗺️</span>
+                                    Interactive Maps
+                                </NavDropdown.Item>
+                            </LinkContainer>
+
                             <NavDropdown.Divider />
 
                             <NavDropdown.Header>Future Agents</NavDropdown.Header>

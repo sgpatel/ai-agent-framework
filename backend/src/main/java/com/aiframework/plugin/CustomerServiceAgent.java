@@ -115,4 +115,10 @@ public class CustomerServiceAgent implements Agent {
         this.status = AgentStatus.SHUTDOWN;
         logger.info("CustomerServiceAgent shutdown");
     }
+
+    @Override
+    public AgentConfig getConfig() {
+        return config;
+    }
+
 }

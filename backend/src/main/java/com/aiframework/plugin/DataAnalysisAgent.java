@@ -84,4 +84,10 @@ public class DataAnalysisAgent implements Agent {
         this.status = AgentStatus.SHUTDOWN;
         logger.info("DataAnalysisAgent shutdown");
     }
+
+    @Override
+    public AgentConfig getConfig() {
+        return config;
+    }
 }
+

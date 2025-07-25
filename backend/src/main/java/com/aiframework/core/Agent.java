@@ -39,4 +39,10 @@ public interface Agent {
      */
     void shutdown();
 
+    /**
+     * Config
+     * @return
+     */
+    AgentConfig getConfig();
+
 }

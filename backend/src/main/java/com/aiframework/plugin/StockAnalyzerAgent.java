@@ -390,4 +390,9 @@ public class StockAnalyzerAgent implements Agent {
     public AgentStatus getStatus() {
         return status;
     }
+
+    @Override
+    public AgentConfig getConfig() {
+        return config;
+    }
 }
