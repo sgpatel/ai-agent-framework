@@ -1,0 +1,6 @@
+com.aiframework.plugin.StockAnalyzerAgent
+com.aiframework.plugin.DataAnalysisAgent
+com.aiframework.plugin.CustomerServiceAgent
+com.aiframework.plugin.TemplateAgent
+com.aiframework.plugin.SentimentAnalysisAgent
+com.aiframework.plugin.ChartVisualizationAgent
