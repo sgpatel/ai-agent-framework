@@ -212,7 +212,7 @@ public class SentimentAnalysisAgent implements Agent {
         return status;
     }
 
-   // @Override
+    @Override
     public AgentConfig getConfig() {
         return config;
     }

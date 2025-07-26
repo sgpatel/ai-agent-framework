@@ -211,16 +211,23 @@
     align-items: flex-start;
   }
 
-  .log-time, .log-level {
+  .log-time,
+  .log-level {
     margin-bottom: 0.25rem;
   }
 }
 
 /* Animation for status indicators */
 @keyframes statusPulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.6; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .badge.bg-success {
@@ -244,6 +251,10 @@
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

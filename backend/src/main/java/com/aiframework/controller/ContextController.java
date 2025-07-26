@@ -18,7 +18,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/context")
-@CrossOrigin(origins = "*")
 public class ContextController {
 
     @Autowired

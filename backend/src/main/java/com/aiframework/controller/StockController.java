@@ -3,15 +3,21 @@ package com.aiframework.controller;
 import com.aiframework.dto.StockQuote;
 import com.aiframework.dto.TechnicalIndicators;
 import com.aiframework.dto.TradingSignal;
+import com.aiframework.exception.StockDataNotFoundException;
 import com.aiframework.service.AdvancedStockAnalysisService;
 import com.aiframework.service.StockDataService;
 import com.aiframework.service.TechnicalPatternService;
 import com.aiframework.service.RiskAssessmentService;
 import com.aiframework.service.PricePredictionService;
 import com.aiframework.validation.ValidStockSymbol;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +25,8 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/stocks")
-@CrossOrigin(origins = "*")
+@Validated
+@Slf4j
 public class StockController {
     
     private final StockDataService stockDataService;
@@ -41,23 +48,54 @@ public class StockController {
     }
 
     @GetMapping("/{symbol}/quote")
+    // @PreAuthorize("hasRole('USER')") // Commented out for development
     public CompletableFuture<ResponseEntity<StockQuote>> getRealTimeQuote(
-            @PathVariable @ValidStockSymbol String symbol) {
+            @PathVariable @ValidStockSymbol @Size(min = 1, max = 10) String symbol) {
+
+        log.info("Fetching real-time quote for symbol: {}", symbol);
+
         return advancedAnalysisService.getRealTimeQuote(symbol.toUpperCase())
-                .thenApply(ResponseEntity::ok);
+                .thenApply(quote -> {
+                    log.debug("Successfully retrieved quote for {}: {}", symbol, quote.getPrice());
+                    return ResponseEntity.ok(quote);
+                })
+                .exceptionally(ex -> {
+                    log.error("Failed to retrieve quote for symbol: {}", symbol, ex);
+                    throw new StockDataNotFoundException(symbol);
+                });
     }
     
     @GetMapping("/{symbol}/price")
+    // @PreAuthorize("hasRole('USER')") // Commented out for development
     public ResponseEntity<Map<String, Object>> getStockPrice(
-            @PathVariable @ValidStockSymbol String symbol) {
-        return ResponseEntity.ok(stockDataService.getStockPrice(symbol));
+            @PathVariable @ValidStockSymbol @Size(min = 1, max = 10) String symbol) {
+
+        log.info("Fetching stock price for symbol: {}", symbol);
+
+        try {
+            Map<String, Object> price = stockDataService.getStockPrice(symbol.toUpperCase());
+            return ResponseEntity.ok(price);
+        } catch (Exception ex) {
+            log.error("Failed to fetch stock price for symbol: {}", symbol, ex);
+            throw new StockDataNotFoundException(symbol);
+        }
     }
     
     @GetMapping("/{symbol}/history")
+    // @PreAuthorize("hasRole('USER')") // Commented out for development
     public ResponseEntity<List<Map<String, Object>>> getHistoricalData(
-            @PathVariable @ValidStockSymbol String symbol,
-            @RequestParam(defaultValue = "1y") String period) {
-        return ResponseEntity.ok(stockDataService.getHistoricalData(symbol, period));
+            @PathVariable @ValidStockSymbol @Size(min = 1, max = 10) String symbol,
+            @RequestParam(defaultValue = "1y") @Pattern(regexp = "^(1d|5d|1mo|3mo|6mo|1y|2y|5y|10y|ytd|max)$") String period) {
+
+        log.info("Fetching historical data for symbol: {}, period: {}", symbol, period);
+
+        try {
+            List<Map<String, Object>> history = stockDataService.getHistoricalData(symbol.toUpperCase(), period);
+            return ResponseEntity.ok(history);
+        } catch (Exception ex) {
+            log.error("Failed to fetch historical data for symbol: {}, period: {}", symbol, period, ex);
+            throw new StockDataNotFoundException(symbol);
+        }
     }
     
     @GetMapping("/{symbol}/history/advanced")

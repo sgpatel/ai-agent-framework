@@ -1,0 +1,36 @@
+{
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ],
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "react/prop-types": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "prefer-const": "error",
+    "no-var": "error",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-no-useless-fragment": "warn",
+    "react/jsx-pascal-case": "error",
+    "react/no-array-index-key": "warn",
+    "react/self-closing-comp": "warn"
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}
+

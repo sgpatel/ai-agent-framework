@@ -35,13 +35,13 @@ const IntelligentDashboard = () => {
         rsi: 65,
         macd: 0.5,
         movingAverage20: 148.5,
-        movingAverage50: 145.2
+        movingAverage50: 145.2,
       };
 
       const response = await fetch('/api/intelligent/decision/investment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symbol, marketData })
+        body: JSON.stringify({ symbol, marketData }),
       });
 
       const data = await response.json();
@@ -61,13 +61,13 @@ const IntelligentDashboard = () => {
         priceChange: -2.5,
         percentChange: -1.64,
         volume: 1200000,
-        alert: alertType
+        alert: alertType,
       };
 
       const response = await fetch('/api/intelligent/support/stock-alert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symbol, alertType, marketData })
+        body: JSON.stringify({ symbol, alertType, marketData }),
       });
 
       const data = await response.json();
@@ -86,7 +86,7 @@ const IntelligentDashboard = () => {
         symbol,
         urgency: 'HIGH',
         analysisType: 'COMPREHENSIVE',
-        riskTolerance: 'MEDIUM'
+        riskTolerance: 'MEDIUM',
       };
 
       const response = await fetch('/api/intelligent/agents/communicate', {
@@ -95,8 +95,8 @@ const IntelligentDashboard = () => {
         body: JSON.stringify({
           fromAgent: 'user-interface',
           task: `Perform comprehensive analysis for ${symbol} with risk assessment and trading recommendations`,
-          context
-        })
+          context,
+        }),
       });
 
       const data = await response.json();
@@ -114,13 +114,13 @@ const IntelligentDashboard = () => {
       const context = {
         currentValue: indicator === 'RSI' ? 65 : 0.5,
         trend: 'BULLISH',
-        timeframe: '1D'
+        timeframe: '1D',
       };
 
       const response = await fetch('/api/intelligent/support/explain-indicator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ indicator, symbol, context })
+        body: JSON.stringify({ indicator, symbol, context }),
       });
 
       const data = await response.json();
@@ -136,8 +136,9 @@ const IntelligentDashboard = () => {
     <div className="tab-content">
       <div className="decision-controls">
         <div className="input-group">
-          <label>Stock Symbol:</label>
+          <label htmlFor="symbol-input">Stock Symbol:</label>
           <input
+            id="symbol-input"
             type="text"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
@@ -261,10 +262,10 @@ const IntelligentDashboard = () => {
                 </div>
                 <p className="agent-description">{agent.description}</p>
                 <div className="capabilities">
-                  {agent.capabilities.slice(0, 3).map((cap, capIndex) => (
+                  {agent.capabilities?.slice(0, 3).map((cap, capIndex) => (
                     <span key={capIndex} className="capability-tag">{cap}</span>
                   ))}
-                  {agent.capabilities.length > 3 && (
+                  {agent.capabilities?.length > 3 && (
                     <span className="capability-tag more">+{agent.capabilities.length - 3} more</span>
                   )}
                 </div>
@@ -366,30 +367,88 @@ const IntelligentDashboard = () => {
   );
 };
 
-export default IntelligentDashboard;
-
 const AgentThinkingPanel = ({ agentId, result }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const handleToggle = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleToggle();
+    }
+  };
+
+  // Handle different response structures from backend
+  const getAgentAnalysis = () => {
+    if (!result) {
+      return 'No analysis data available for this agent.';
+    }
+
+    // Try different possible response structures
+    if (result.detailedAnalysis) {
+      return result.detailedAnalysis;
+    }
+
+    if (result.analysis) {
+      return result.analysis;
+    }
+
+    if (result.content) {
+      return result.content;
+    }
+
+    if (result.response) {
+      return result.response;
+    }
+
+    if (typeof result === 'string') {
+      return result;
+    }
+
+    // If result is an object, try to extract meaningful content
+    if (typeof result === 'object') {
+      const possibleKeys = ['reasoning', 'recommendation', 'summary', 'output', 'result'];
+      for (const key of possibleKeys) {
+        if (result[key] && typeof result[key] === 'string') {
+          return result[key];
+        }
+      }
+
+      // Fallback: show formatted JSON
+      return `**Agent Analysis:**\n\n${JSON.stringify(result, null, 2)}`;
+    }
+
+    return 'Agent analysis in progress...';
+  };
+
   return (
     <div className="agent-thinking-panel">
-      <div className="panel-header" onClick={() => setExpanded(!expanded)}>
+      <div
+        className="panel-header"
+        onClick={handleToggle}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-expanded={expanded}
+        aria-controls={`panel-content-${agentId}`}
+      >
         <h5>{agentId}</h5>
         <span className="toggle-icon">{expanded ? '▼' : '►'}</span>
       </div>
       {expanded && (
-        <div className="panel-content">
+        <div id={`panel-content-${agentId}`} className="panel-content">
           <div className="markdown-content">
-            {result?.detailedAnalysis ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {result.detailedAnalysis}
-              </ReactMarkdown>
-            ) : (
-              <p>Agent is analyzing...</p>
-            )}
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {getAgentAnalysis()}
+            </ReactMarkdown>
           </div>
         </div>
       )}
     </div>
   );
 };
+
+export default IntelligentDashboard;

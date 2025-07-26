@@ -1,178 +1,268 @@
-import React from 'react';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Navbar, Nav, Container, Button, Dropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { useLocation } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import { motion } from 'framer-motion';
+import UserAvatar from './common/UserAvatar';
+import './Navigation.css';
+import '../styles/components.css';
 
 export default function Navigation() {
-    return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
-            <Container fluid>
-                <Navbar.Brand className="fw-bold d-flex align-items-center">
-                    <span className="me-2">🧠</span>
-                    <span>AI Agent Framework</span>
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="nav" />
-                <Navbar.Collapse id="nav">
-                    <Nav className="me-auto">
-                        {/* Dashboard - Main overview */}
-                        <LinkContainer to="/dashboard">
-                            <Nav.Link className="d-flex align-items-center">
-                                <span className="me-2">📊</span>
-                                Dashboard
-                            </Nav.Link>
-                        </LinkContainer>
+  const location = useLocation();
+  const { theme, toggleTheme, user } = useAppContext();
+  const [expanded, setExpanded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-                        {/* AI Agents - Scalable section for all agent types */}
-                        <NavDropdown
-                            title={
-                                <span className="d-flex align-items-center">
-                                    <span className="me-2">🤖</span>
-                                    AI Agents
-                                </span>
-                            }
-                            id="agents-dropdown"
-                        >
-                            <NavDropdown.Header>Financial Agents</NavDropdown.Header>
-                            <LinkContainer to="/stocks">
-                                <NavDropdown.Item>
-                                    <span className="me-2">📈</span>
-                                    Stock Analyzer
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <NavDropdown.Divider />
+  const isActive = path => location.pathname === path;
 
-                            <NavDropdown.Header>Intelligence Agents</NavDropdown.Header>
-                            <LinkContainer to="/search">
-                                <NavDropdown.Item>
-                                    <span className="me-2">🔍</span>
-                                    Intelligent Search
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to="/intelligent">
-                                <NavDropdown.Item>
-                                    <span className="me-2">🧠</span>
-                                    Smart Decisions
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to="/ai-chat">
-                                <NavDropdown.Item>
-                                    <span className="me-2">💬</span>
-                                    GPT4All Chat
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <NavDropdown.Divider />
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
 
-                            <NavDropdown.Header>Map & Location</NavDropdown.Header>
-                            <LinkContainer to="/maps">
-                                <NavDropdown.Item>
-                                    <span className="me-2">🗺️</span>
-                                    Interactive Maps
-                                </NavDropdown.Item>
-                            </LinkContainer>
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-                            <NavDropdown.Divider />
+  const handleToggle = () => setExpanded(!expanded);
+  const handleClose = () => setExpanded(false);
 
-                            <NavDropdown.Header>Future Agents</NavDropdown.Header>
-                            <NavDropdown.Item disabled className="text-muted">
-                                <span className="me-2">🔮</span>
-                                More agents coming soon...
-                            </NavDropdown.Item>
-                        </NavDropdown>
+  const handleProfileClick = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
-                        {/* Analytics & Monitoring */}
-                        <NavDropdown
-                            title={
-                                <span className="d-flex align-items-center">
-                                    <span className="me-2">📊</span>
-                                    Analytics
-                                </span>
-                            }
-                            id="analytics-dropdown"
-                        >
-                            <LinkContainer to="/metrics">
-                                <NavDropdown.Item>
-                                    <span className="me-2">📊</span>
-                                    System Metrics
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to="/monitoring">
-                                <NavDropdown.Item>
-                                    <span className="me-2">🔍</span>
-                                    System Monitor
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <NavDropdown.Divider />
-                            <LinkContainer to="/context">
-                                <NavDropdown.Item>
-                                    <span className="me-2">🔄</span>
-                                    Context Manager
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                        </NavDropdown>
+  const handleLogout = () => {
+    console.log('Logging out...');
+    setDropdownOpen(false);
+  };
 
-                        {/* Task & Workflow Management */}
-                        <NavDropdown
-                            title={
-                                <span className="d-flex align-items-center">
-                                    <span className="me-2">⚙️</span>
-                                    Management
-                                </span>
-                            }
-                            id="management-dropdown"
-                        >
-                            <NavDropdown.Header>Task Management</NavDropdown.Header>
-                            <LinkContainer to="/tasks/new">
-                                <NavDropdown.Item>
-                                    <span className="me-2">➕</span>
-                                    Create Task
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to="/tasks/history">
-                                <NavDropdown.Item>
-                                    <span className="me-2">📋</span>
-                                    Task History
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                            <NavDropdown.Divider />
+  const navVariants = {
+    hidden: { y: -100, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { duration: 0.6, ease: 'easeOut' },
+    },
+  };
 
-                            <NavDropdown.Header>System Configuration</NavDropdown.Header>
-                            <LinkContainer to="/plugins">
-                                <NavDropdown.Item>
-                                    <span className="me-2">🔌</span>
-                                    Plugins
-                                </NavDropdown.Item>
-                            </LinkContainer>
-                        </NavDropdown>
-                    </Nav>
+  const brandVariants = {
+    hover: { 
+      scale: 1.05,
+      transition: { duration: 0.2 },
+    },
+  };
 
-                    {/* Right side navigation - User/Settings */}
-                    <Nav>
-                        <NavDropdown
-                            title={
-                                <span className="d-flex align-items-center">
-                                    <span className="me-2">⚙️</span>
-                                    Settings
-                                </span>
-                            }
-                            id="settings-dropdown"
-                            align="end"
-                        >
-                            <NavDropdown.Item>
-                                <span className="me-2">🎨</span>
-                                Theme
-                            </NavDropdown.Item>
-                            <NavDropdown.Item>
-                                <span className="me-2">🔔</span>
-                                Notifications
-                            </NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item>
-                                <span className="me-2">❓</span>
-                                Help & Support
-                            </NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
-    );
+  const linkVariants = {
+    hover: { 
+      y: -2,
+      transition: { duration: 0.2 },
+    },
+  };
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={navVariants}
+    >
+      <Navbar 
+        expand="lg" 
+        fixed="top" 
+        className={`navbar-professional ${isScrolled ? 'scrolled' : ''}`}
+        expanded={expanded}
+        onToggle={handleToggle}
+      >
+        <Container fluid className="px-4">
+          {/* Brand */}
+          <motion.div variants={brandVariants} whileHover="hover">
+            <LinkContainer to="/">
+              <Navbar.Brand className="navbar-brand-professional">
+                <div className="brand-icon">
+                  🤖
+                </div>
+                <span className="brand-text">AI Agent Framework</span>
+              </Navbar.Brand>
+            </LinkContainer>
+          </motion.div>
+
+          {/* Mobile menu toggle */}
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
+          {/* Navigation Items */}
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="navbar-nav-professional me-auto">
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/">
+                  <Nav.Link 
+                    className={`nav-link-professional ${isActive('/') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    🏠 Home
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/dashboard">
+                  <Nav.Link
+                    className={`nav-link-professional ${isActive('/dashboard') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    🤖 Agents
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/context-manager">
+                  <Nav.Link 
+                    className={`nav-link-professional ${isActive('/context-manager') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    🧠 Context Manager
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/intelligent-dashboard">
+                  <Nav.Link 
+                    className={`nav-link-professional ${isActive('/intelligent-dashboard') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    📊 Analytics
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/stocks">
+                  <Nav.Link
+                    className={`nav-link-professional ${isActive('/stocks') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    📈 Stocks
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/task-management">
+                  <Nav.Link 
+                    className={`nav-link-professional ${isActive('/task-management') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    ✅ Tasks
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/plugin-manager">
+                  <Nav.Link 
+                    className={`nav-link-professional ${isActive('/plugin-manager') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    🔌 Plugins
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+
+              <motion.div variants={linkVariants} whileHover="hover">
+                <LinkContainer to="/ai-chat">
+                  <Nav.Link
+                    className={`nav-link-professional ${isActive('/ai-chat') ? 'active' : ''}`}
+                    onClick={handleClose}
+                  >
+                    💬 AI Chat
+                  </Nav.Link>
+                </LinkContainer>
+              </motion.div>
+            </Nav>
+
+            {/* Right side items */}
+            <Nav className="navbar-nav-professional align-items-lg-center">
+              {/* Search */}
+              <div className="search-container-professional me-3">
+                <input
+                  type="search"
+                  placeholder="Search..."
+                  className="search-input-professional"
+                />
+              </div>
+
+              {/* Notifications */}
+              <Button 
+                variant="outline-secondary" 
+                className="notification-bell me-2 border-0"
+                aria-label="Notifications"
+              >
+                🔔
+                <span className="notification-badge">3</span>
+              </Button>
+
+              {/* Theme Toggle */}
+              <div 
+                className="theme-toggle me-3"
+                onClick={toggleTheme}
+                role="button"
+                tabIndex={0}
+                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    toggleTheme();
+                  }
+                }}
+              >
+                <div className="theme-toggle-slider">
+                  {theme === 'light' ? '🌙' : '☀️'}
+                </div>
+              </div>
+
+              {/* User Menu */}
+              <Dropdown show={dropdownOpen} onToggle={setDropdownOpen}>
+                <Dropdown.Toggle 
+                  as="button"
+                  className="dropdown-toggle-professional"
+                  onClick={handleProfileClick}
+                  aria-label="User menu"
+                >
+                  <div className="user-avatar-professional">
+                    {user?.name ? user.name.charAt(0).toUpperCase() : '👤'}
+                  </div>
+                  <span className="d-none d-lg-inline">{user?.name || 'Guest'}</span>
+                  <span>▼</span>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="dropdown-menu-professional">
+                  <LinkContainer to="/profile">
+                    <Dropdown.Item className="dropdown-item-professional" onClick={handleClose}>
+                      👤 Profile
+                    </Dropdown.Item>
+                  </LinkContainer>
+                  
+                  <LinkContainer to="/settings">
+                    <Dropdown.Item className="dropdown-item-professional" onClick={handleClose}>
+                      ⚙️ Settings
+                    </Dropdown.Item>
+                  </LinkContainer>
+                  
+                  <Dropdown.Divider className="dropdown-divider-professional" />
+                  
+                  <Dropdown.Item 
+                    className="dropdown-item-professional" 
+                    onClick={handleLogout}
+                  >
+                    🚪 Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </motion.div>
+  );
 }

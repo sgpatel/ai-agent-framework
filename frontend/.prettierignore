@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Public assets
+public/
+
+# Coverage reports
+coverage/
+
+# Log files
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

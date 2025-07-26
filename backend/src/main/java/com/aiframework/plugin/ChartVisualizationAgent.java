@@ -243,7 +243,7 @@ public class ChartVisualizationAgent implements Agent {
         return status;
     }
 
-    //@Override
+    @Override
     public AgentConfig getConfig() {
         return config;
     }

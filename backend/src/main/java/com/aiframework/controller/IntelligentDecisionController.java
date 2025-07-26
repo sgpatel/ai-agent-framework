@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/intelligent")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class IntelligentDecisionController {
 
     private static final Logger logger = LoggerFactory.getLogger(IntelligentDecisionController.class);
@@ -218,6 +218,34 @@ public class IntelligentDecisionController {
                 logger.error("Error issuing risk warning", throwable);
                 Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("error", "Failed to issue risk warning");
+                errorResponse.put("message", throwable.getMessage());
+                return ResponseEntity.internalServerError().body(errorResponse);
+            });
+    }
+
+    @PostMapping("/support/analyze")
+    public CompletableFuture<ResponseEntity<Map<String, Object>>> analyzeCustomerSupport(@RequestBody Map<String, Object> request) {
+        String query = (String) request.get("query");
+        Map<String, Object> userContext = (Map<String, Object>) request.get("userContext");
+
+        return customerSupport.handleGeneralInquiry(query, userContext)
+            .thenApply(analysis -> ResponseEntity.ok(Map.<String, Object>of(
+                "analysis", analysis.getContent(),
+                "category", analysis.getResponseType(),
+                "priority", analysis.getUrgencyLevel(),
+                "confidence", 0.92,
+                "estimatedResolutionTime", "5-10 minutes",
+                "recommendedActions", analysis.getActionItems() != null ? analysis.getActionItems() : Arrays.asList(
+                    "Review provided analysis",
+                    "Consider implementing suggestions",
+                    "Monitor market conditions"
+                ),
+                "timestamp", new Date()
+            )))
+            .exceptionally(throwable -> {
+                logger.error("Error analyzing customer support request", throwable);
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Failed to analyze customer support request");
                 errorResponse.put("message", throwable.getMessage());
                 return ResponseEntity.internalServerError().body(errorResponse);
             });

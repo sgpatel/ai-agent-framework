@@ -16,7 +16,6 @@ import java.time.format.DateTimeFormatter;
  */
 @RestController
 @RequestMapping("/api/plugins")
-@CrossOrigin(origins = "*")
 public class PluginController {
 
     @Autowired

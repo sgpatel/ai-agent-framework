@@ -43,14 +43,14 @@ const GPT4AllChat = () => {
         requestBody = {
           symbol: extractSymbol(inputText),
           marketData: inputText,
-          technicalIndicators: 'RSI, MACD, Moving Averages'
+          technicalIndicators: 'RSI, MACD, Moving Averages',
         };
       } else if (selectedMode === 'trading-insight') {
         endpoint = '/api/llm/trading-insight';
         requestBody = {
           symbol: extractSymbol(inputText),
           priceData: inputText,
-          signals: 'Technical analysis signals'
+          signals: 'Technical analysis signals',
         };
       }
 
@@ -59,7 +59,7 @@ const GPT4AllChat = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
@@ -68,7 +68,7 @@ const GPT4AllChat = () => {
         role: 'assistant',
         content: data.response || data.analysis || data.insight || data.error,
         timestamp: new Date(),
-        mode: selectedMode
+        mode: selectedMode,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -78,7 +78,7 @@ const GPT4AllChat = () => {
         role: 'assistant',
         content: 'Sorry, I encountered an error processing your request.',
         timestamp: new Date(),
-        isError: true
+        isError: true,
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -86,12 +86,12 @@ const GPT4AllChat = () => {
     }
   };
 
-  const extractSymbol = (text) => {
+  const extractSymbol = text => {
     const symbolMatch = text.match(/\b[A-Z]{1,5}\b/);
     return symbolMatch ? symbolMatch[0] : 'UNKNOWN';
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -104,82 +104,83 @@ const GPT4AllChat = () => {
 
   const getStatusColor = () => {
     switch (modelStatus) {
-      case 'READY': return '#4CAF50';
-      case 'LOADING': return '#FF9800';
-      case 'DISABLED': return '#9E9E9E';
-      default: return '#F44336';
+    case 'READY':
+      return '#4CAF50';
+    case 'LOADING':
+      return '#FF9800';
+    case 'DISABLED':
+      return '#9E9E9E';
+    default:
+      return '#F44336';
     }
   };
 
   return (
-    <div className="gpt4all-chat">
-      <div className="chat-header">
-        <div className="header-content">
+    <div className='gpt4all-chat'>
+      <div className='chat-header'>
+        <div className='header-content'>
           <h3>GPT4All Intelligence</h3>
-          <div className="model-status">
-            <span
-              className="status-indicator"
-              style={{ backgroundColor: getStatusColor() }}
-            />
-            <span className="status-text">{modelStatus}</span>
+          <div className='model-status'>
+            <span className='status-indicator' style={{ backgroundColor: getStatusColor() }} />
+            <span className='status-text'>{modelStatus}</span>
           </div>
         </div>
 
-        <div className="mode-selector">
+        <div className='mode-selector'>
           <select
             value={selectedMode}
-            onChange={(e) => setSelectedMode(e.target.value)}
-            className="mode-select"
+            onChange={e => setSelectedMode(e.target.value)}
+            className='mode-select'
           >
-            <option value="general">General Chat</option>
-            <option value="stock-analysis">Stock Analysis</option>
-            <option value="trading-insight">Trading Insights</option>
+            <option value='general'>General Chat</option>
+            <option value='stock-analysis'>Stock Analysis</option>
+            <option value='trading-insight'>Trading Insights</option>
           </select>
-          <button onClick={clearChat} className="clear-btn">Clear</button>
+          <button onClick={clearChat} className='clear-btn'>
+            Clear
+          </button>
         </div>
       </div>
 
-      <div className="chat-messages">
+      <div className='chat-messages'>
         {messages.length === 0 && (
-          <div className="welcome-message">
+          <div className='welcome-message'>
             <h4>Welcome to GPT4All Intelligence!</h4>
             <p>Select a mode and start chatting:</p>
             <ul>
-              <li><strong>General Chat:</strong> Ask any questions</li>
-              <li><strong>Stock Analysis:</strong> Get detailed stock analysis</li>
-              <li><strong>Trading Insights:</strong> Receive trading recommendations</li>
+              <li>
+                <strong>General Chat:</strong> Ask any questions
+              </li>
+              <li>
+                <strong>Stock Analysis:</strong> Get detailed stock analysis
+              </li>
+              <li>
+                <strong>Trading Insights:</strong> Receive trading recommendations
+              </li>
             </ul>
           </div>
         )}
 
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`message ${message.role} ${message.isError ? 'error' : ''}`}
-          >
-            <div className="message-content">
-              <div className="message-text">
-                <ReactMarkdown
-                  children={message.content}
-                  remarkPlugins={[remarkGfm]}
-                />
+          <div key={index} className={`message ${message.role} ${message.isError ? 'error' : ''}`}>
+            <div className='message-content'>
+              <div className='message-text'>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {message.content}
+                </ReactMarkdown>
               </div>
-              <div className="message-meta">
-                <span className="timestamp">
-                  {message.timestamp.toLocaleTimeString()}
-                </span>
-                {message.mode && (
-                  <span className="mode-badge">{message.mode}</span>
-                )}
+              <div className='message-meta'>
+                <span className='timestamp'>{message.timestamp.toLocaleTimeString()}</span>
+                {message.mode && <span className='mode-badge'>{message.mode}</span>}
               </div>
             </div>
           </div>
         ))}
 
         {isLoading && (
-          <div className="message assistant loading">
-            <div className="message-content">
-              <div className="typing-indicator">
+          <div className='message assistant loading'>
+            <div className='message-content'>
+              <div className='typing-indicator'>
                 <span></span>
                 <span></span>
                 <span></span>
@@ -189,26 +190,26 @@ const GPT4AllChat = () => {
         )}
       </div>
 
-      <div className="chat-input">
-        <div className="input-container">
+      <div className='chat-input'>
+        <div className='input-container'>
           <textarea
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={e => setInputText(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={
               selectedMode === 'general'
-                ? "Ask me anything..."
+                ? 'Ask me anything...'
                 : selectedMode === 'stock-analysis'
-                ? "Enter stock symbol and market data for analysis..."
-                : "Ask for trading insights on a specific stock..."
+                  ? 'Enter stock symbol and market data for analysis...'
+                  : 'Ask for trading insights on a specific stock...'
             }
             disabled={modelStatus !== 'READY' || isLoading}
-            rows="2"
+            rows='2'
           />
           <button
             onClick={sendMessage}
             disabled={!inputText.trim() || modelStatus !== 'READY' || isLoading}
-            className="send-btn"
+            className='send-btn'
           >
             Send
           </button>

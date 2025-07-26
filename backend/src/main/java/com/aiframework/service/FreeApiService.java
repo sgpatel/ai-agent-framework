@@ -412,8 +412,8 @@ public class FreeApiService {
 
         try {
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            String url = pixabayApiUrl + "?key=" + pixabayApiKey +
-                        "&q=" + encodedQuery +
+            String url = pixabayApiUrl + "?key=" + pixabayApiKey + 
+                        "&q=" + encodedQuery + 
                         "&image_type=" + (imageType != null ? imageType : "photo") +
                         "&category=" + (category != null ? category : "") +
                         "&min_width=640" +
@@ -501,7 +501,7 @@ public class FreeApiService {
 
     private List<Map<String, Object>> getMockImageResults(String query) {
         List<Map<String, Object>> results = new ArrayList<>();
-
+        
         // Generate mock image results
         for (int i = 0; i < 6; i++) {
             Map<String, Object> result = new HashMap<>();
@@ -524,7 +524,7 @@ public class FreeApiService {
             result.put("relevanceScore", 0.7);
             results.add(result);
         }
-
+        
         return results;
     }
 }

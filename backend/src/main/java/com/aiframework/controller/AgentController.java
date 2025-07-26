@@ -38,6 +38,7 @@ public class AgentController {
             .map(AgentInfo::new)
             .collect(Collectors.toList());
 
+        logger.info("Found {} agents", agentInfos.size());
         return ResponseEntity.ok(agentInfos);
     }
 

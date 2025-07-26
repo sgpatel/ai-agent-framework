@@ -1,0 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit hooks..."
+
+# Run lint-staged
+npx lint-staged
+
+# Check for console.log statements in production
+if grep -r "console\.log" src/ --exclude-dir=node_modules; then
+  echo "❌ Found console.log statements. Please remove them before committing."
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"

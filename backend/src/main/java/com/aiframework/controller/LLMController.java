@@ -13,7 +13,6 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/llm")
-@CrossOrigin(origins = "*")
 public class LLMController {
 
     private static final Logger logger = LoggerFactory.getLogger(LLMController.class);
